@@ -4,7 +4,6 @@ const hat = '^';
 const hole = 'O';
 const fieldCharacter = '░';
 const pathCharacter = '*';
-const rand = Math.floor(Math.random() * 10);
 
 class Field {
     constructor(field) {
@@ -151,15 +150,32 @@ class Field {
     }
 
     generateField(width, height) {
+        if (typeof width && height === undefined) {
+            width = Math.floor(Math.random(1) * 10)+3;
+            height = Math.floor(Math.random(1) * 10)+3;
+        }
         const randField = [];
-        while (randField <= height) {
+        while (randField.length <= height) {
             let tempArr = []
             for (let i=0; i <= width; i++) {
                 tempArr.push(fieldCharacter);
             }
             randField.push(tempArr)
         }
-        this._field = randField        
+        for (let i=0; i < randField.length; i++) {
+            let tempArr = randField[i];
+            for (let j=0; j <= width; j+=3) {
+                if (tempArr[j] !== "*" || "^") {
+                    let num = Math.floor(Math.random() * width)
+                    tempArr[num] = 'O';
+                }
+            }
+        }
+        let startPoint = randField[0];
+        startPoint[0] = "*";
+        let endPoint = randField[height];
+        endPoint[width] = "^";
+        this._field = randField;        
     }
 }
 
@@ -180,7 +196,7 @@ const found = playAgain.match(regex);
 switch (found[0].toLowerCase()) {
     case "yes":
     case "y":
-    myField.generateField(rand, rand);
+    myField.generateField();
     myField.print();  
     break;
     default:
